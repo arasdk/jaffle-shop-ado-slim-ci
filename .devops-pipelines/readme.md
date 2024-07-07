@@ -12,6 +12,23 @@ The CI workflow consists of two pipelines:
 
 2. **Pull Request Pipeline (`azure-pipelines-dbt-slim-ci.yml`):** This pipeline runs on each pull request (PR), using the "ci_main" schema to defer untouched models in the PR branch when evaluating the PR. This approach allows for a more efficient CI process, as only the models affected by the PR are rebuilt and tested, reducing the overall execution time considerably for medium or large projects.
 
+<br>
+
+
+### CI Workflow
+The developer creates a feature branch and starts working on the dbt project, changing, adding dbt models as required. During development, the development data warehouse is used from the dbt Core tool (**1**) on the local development environment.
+<br><br>
+When the feature is complete the developer creates a pull request for review. This triggers a CI pipeline (**2**) that loads the dbt manifest generated from the main branch, and proceeds to build the dbt models deferring to the models on the ci_main schema. 
+<br><br>
+When the feature is merged to main this triggers a pipeline (**3**) that generates a dbt manifest from the main branch, and proceeds to build the dbt models to the ci_main schema. The dbt manifest is then uploaded to the storage account.
+<br><br>
+The main branch is deployed to the production data warehouse (**4**).
+
+<br><br>
+![CICD drawio](https://github.com/arasdk/jaffle-shop-ado-slim-ci/assets/145650154/7c44475a-bca4-443b-9716-5cff1ca88c8c)
+<br><br>
+
+
 
 ## Pipeline Details
 
@@ -42,6 +59,8 @@ The dbt profile used in this sample code is using Databricks SQL Warehouse as th
 
 - Set up a storage account in Azure for manifest file management
 - Configure an Azure DevOps Service Connection to enable the DevOps pipeline to access the storage account
+- Add the two pipelines to the DevOps project
+- Go to the Repository settings -> branch policies of your DevOps project and specify a build validation rule for the main branch in your project. Configure the `azure-pipelines-dbt-slim-ci.yml` pipeline to run as part of the build validation rule.
 - Modify `profiles.yml` to use the appropriate settings for your data warehouse
 - Modify `template-steps-init-dbt.yml` to intall your preferred dbt-adapter instead of `dbt-databricks`
 - Set the correct environment variables for your dbt profile in `azure-pipelines-dbt-ci-main.yml` and `azure-pipelines-dbt-slim-ci.yml`
