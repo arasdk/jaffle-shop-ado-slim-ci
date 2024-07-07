@@ -48,8 +48,4 @@ If you want to experiment with the pipelines
 
 To use these pipelines in your project, ensure that your Azure DevOps environment is configured with the necessary permissions and variables, including access to the Azure storage account for manifest file management. Modify the `profiles.yml` and pipeline YAML files as needed to match your dbt project and data warehouse setup.
 
-**Note**: You need to setup an Azure DevOps Service Connection to enable the DevOps pipeline to access azure resources such as the storage account.
-
-## Conclusion
-
-These pipelines facilitate a robust CI workflow for dbt projects, automating the testing and deployment process while optimizing build times for pull requests. By leveraging Azure DevOps and Databricks, teams can achieve more efficient and reliable data transformation workflows.
+**Note**: You need to setup an Azure DevOps Service Connection to enable the DevOps pipeline to access azure resources such as the storage account. The service connection needs to be granted `Storage Blob Data Contributor` on the storage account.
