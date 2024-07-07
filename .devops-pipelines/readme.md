@@ -40,11 +40,13 @@ The pipelines utilize a `profiles.yml` file for dbt configuration, specifying co
 ## Usage
 The dbt profile used in this sample code is using Databricks SQL Warehouse as the Data Warehouse. This can easily be replaced with your data warehouse of choice by following the these steps: 
 
+- Set up a storage account in Azure for manifest file management
+- Configure an Azure DevOps Service Connection to enable the DevOps pipeline to access the storage account
 - Modify `profiles.yml` to use the appropriate settings for your data warehouse
 - Modify `template-steps-init-dbt.yml` to intall your preferred dbt-adapter instead of `dbt-databricks`
 - Set the correct environment variables for your dbt profile in `azure-pipelines-dbt-ci-main.yml` and `azure-pipelines-dbt-slim-ci.yml`
 
-If you want to experiment with the pipelines
+If you want to experiment with the pipelines, you can fork this repository into your own GitHub respository, and then add the two pipelines in Azure DevOps. The pipelines should work out of the box on the Jaffle Shop dbt project included here given the above modifications. For this to work you need to load the seed files from the `jaffle-data` folder manually to your data warehouse before running the pipelines.
 
 To use these pipelines in your project, ensure that your Azure DevOps environment is configured with the necessary permissions and variables, including access to the Azure storage account for manifest file management. Modify the `profiles.yml` and pipeline YAML files as needed to match your dbt project and data warehouse setup.
 
