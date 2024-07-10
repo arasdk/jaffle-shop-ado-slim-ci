@@ -8,7 +8,7 @@ The CI workflow is split into two main pipelines: `azure-pipelines-dbt-ci-main.y
 
 The CI workflow consists of two pipelines:
 
-1. **Main Branch Pipeline (`azure-pipelines-dbt-ci-main.yml`):** This pipeline is scheduled to run on the `main` branch, executing dbt commands to build all models contained in the production branch into a "ci_main" schema within the data warehouse. It is triggered at 6:30 AM UTC from Monday to Friday, ensuring that the latest changes are built into the ci_main schema at the start of the workday. The pipeline only runs if changes have been applied to the main branch since the last run.
+1. **Main Branch Pipeline (`azure-pipelines-dbt-ci-main.yml`):** This pipeline is scheduled to run on the `main` branch, executing dbt commands to build all models contained in the production branch into a "ci_main" schema within the data warehouse. It is triggered at 4:30 AM UTC from Monday to Friday, ensuring that the latest changes are built into the ci_main schema at the start of the workday. The pipeline only runs if changes have been applied to the main branch since the last run.
 
 2. **Pull Request Pipeline (`azure-pipelines-dbt-slim-ci.yml`):** This pipeline runs on each pull request (PR), using the "ci_main" schema to defer untouched models in the PR branch when evaluating the PR. This approach allows for a more efficient CI process, as only the models affected by the PR are rebuilt and tested, reducing the overall execution time considerably for medium or large projects.
 
