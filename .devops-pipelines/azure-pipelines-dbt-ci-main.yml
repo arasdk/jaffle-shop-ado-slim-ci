@@ -1,0 +1,59 @@
+---
+trigger: none # Disable CI triggers.
+
+pool:
+  vmImage: ubuntu-latest
+
+schedules:
+  # Schedule the pipeline to run between tuesday and friday at 4:30 AM UTC
+  # Trigger only when main branch is updated
+  - cron: "30 4 * * 1-5"
+    displayName: Scheduled Monday to Friday
+    branches:
+      include:
+        - main
+    always: false
+
+jobs:
+  - job: Run_dbt
+    displayName: "Build all dbt models"
+    steps:
+      
+      # Install dbt and python
+      - template: template-steps-init-dbt.yml
+
+      # Run dbt build to generate all models and run all tests in the dbt project
+      - pwsh: |
+          dbt deps
+          dbt build
+        displayName: "Build all dbt models (ci_main schema)"
+        workingDirectory: "$(Build.SourcesDirectory)"
+        env:
+          DBT_PROFILES_DIR: "$(Build.SourcesDirectory)/.devops-pipelines"
+          DBT_DATABRICKS_SCHEMA: "ci_main"
+          DBT_DATABRICKS_HOST: "your-databricks-host"
+          DBT_DATABRICKS_HTTP_PATH: "/sql/1.0/warehouses/your-warehouse-id"
+          DBT_DATABRICKS_TOKEN: "your-databricks-token"
+
+      # Upload the manifest generated in the previous step to a storage account
+      # Insert the service connection name and storage account details
+      - task: AzureCLI@2
+        displayName: "Upload manifest to storage account"
+        inputs:
+          azureSubscription: "your-azure-service-connection-name"
+          scriptType: "bash"
+          scriptLocation: "inlineScript"
+          inlineScript: |
+            # Upload the file
+            az storage blob upload \
+              --account-name $STORAGE_ACCOUNT_NAME \
+              --container-name $CONTAINER_NAME \
+              --file $FILE_PATH \
+              --name $BLOB_NAME \
+              --auth-mode login \
+              --overwrite
+        env:
+          STORAGE_ACCOUNT_NAME: "your-storage-account-name"
+          CONTAINER_NAME: "your-container-name"
+          BLOB_NAME: "jaffle-shop/manifest.json"
+          FILE_PATH: "$(Build.SourcesDirectory)/target/manifest.json"

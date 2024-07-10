@@ -1,0 +1,16 @@
+---
+steps:
+  - task: UsePythonVersion@0
+    displayName: "Use Python 3.12"
+    inputs:
+      versionSpec: "3.12"
+
+  - script: |
+      python -m pip install --upgrade pip
+    displayName: "Installing Python package installer (pip)"
+
+  # Install dbt and dbt Databricks adapter
+  # Use a different adapter if you are not using Databricks
+  - script: |
+      pip install dbt-databricks
+    displayName: "Installing dbt Databricks adapter with dbt Core"
